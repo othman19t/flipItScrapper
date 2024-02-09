@@ -3,7 +3,21 @@ import mongoose from 'mongoose';
 import routers from './src/routes/index.js';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-const allowList = ['http://localhost:3000'];
+import cors from 'cors';
+const allowList = ['http://localhost:3000', 'http://localhost:3001'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowList.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  optionsSuccessStatus: 200, // For legacy browser support
+  credentials: true, // This allows session cookies from browser to pass through
+};
+
 dotenv.config();
 // MongoDB connection string
 const dbUri = process.env.DB_URI;
@@ -14,13 +28,13 @@ mongoose
   .catch((err) => console.error('MongoDB connection error:', err));
 
 const app = express();
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '6mb' }));
 
 app.use('/api', routers);
 app.use(express.json());
 // const bodyParser = require('body-parser');
 // const cors = require('cors');
-// app.use(cors());
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

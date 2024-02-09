@@ -16,12 +16,12 @@ export const getNotifications = async (req, res) => {
     console.log('====================================');
 
     const updateNotifications = await Notification.updateMany(
-      { userId, type: 'newPost', status: 'unread' },
-      { $set: { status: 'read' } },
+      { userId, type: 'newPost', status: 'read' }, //unread
+      { $set: { status: 'unread' } }, //read
       { new: true }
     );
 
-    console.log('updateNotifications', updateNotifications);
+    // console.log('updateNotifications', updateNotifications);
 
     return res.status(200).json({
       success: true,
