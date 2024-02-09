@@ -1,7 +1,7 @@
 import express from 'express';
-import { scrap } from '../controllers/scrap.js';
+import { getPosts } from '../controllers/post.js';
 
 const router = express.Router();
 
-router.get('/run', scrap);
+router.get('/posts', getPosts);
 export default router;

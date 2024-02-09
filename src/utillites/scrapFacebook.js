@@ -33,7 +33,7 @@ async function scrapFacebook(facebookUrl) {
       location: ele.querySelector(
         'a.x1i10hfl div.x9f619 div.x1gslohp span div.x1iorvi4 span.x193iq5w span.x1lliihq'
       ).innerText,
-      postHref: ele.querySelector('a.x1i10hfl').href,
+      postUrl: ele.querySelector('a.x1i10hfl').href,
     }))
   );
   await browser.close();

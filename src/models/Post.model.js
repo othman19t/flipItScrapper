@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    post_url: {
+    postUrl: {
       type: String,
       required: true,
     },
@@ -15,7 +15,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    imgs: [
+    imgSrc: [
       {
         type: String,
       },
@@ -35,6 +35,7 @@ const postSchema = new mongoose.Schema(
     postId: {
       type: String,
       required: true,
+      unique: true,
     },
     location: {
       type: String,
