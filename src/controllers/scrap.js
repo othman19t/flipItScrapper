@@ -76,7 +76,7 @@ export const scrap = async (req, res) => {
     }
     return res.status(200).json({
       success: true,
-      message: 'endpoint hit and everything went well',
+      message: 'scrap endpoint hit and everything went well',
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
