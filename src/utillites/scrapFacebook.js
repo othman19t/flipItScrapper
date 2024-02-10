@@ -6,7 +6,7 @@ async function scrapFacebook(facebookUrl) {
   await page.goto(facebookUrl);
   //************** */
   // Current time plus 2 seconds
-  const endTime = Date.now() + 2000;
+  const endTime = Date.now() + 15000;
 
   while (Date.now() < endTime) {
     // Scroll and wait 500ms

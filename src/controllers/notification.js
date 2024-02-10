@@ -16,8 +16,8 @@ export const getNotifications = async (req, res) => {
     console.log('====================================');
 
     const updateNotifications = await Notification.updateMany(
-      { userId, type: 'newPost', status: 'read' }, //unread
-      { $set: { status: 'unread' } }, //read
+      { userId, type: 'newPost', status: 'unread' }, //unread
+      { $set: { status: 'read' } }, //read
       { new: true }
     );
 
