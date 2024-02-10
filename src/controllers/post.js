@@ -14,5 +14,20 @@ export const getPosts = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+export const getAllPosts = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const posts = await Post.find({ userId })
+      .limit(100)
+      .sort({ createdAt: -1 });
 
-export default { getPosts };
+    console.log('posts length', posts.length);
+    return res
+      .status(200)
+      .json({ success: true, message: 'got posts successfully', posts });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export default { getPosts, getAllPosts };
