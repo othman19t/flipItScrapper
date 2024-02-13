@@ -1,4 +1,4 @@
-import User from '../models/user.model.js';
+import User from '../models/User.model.js';
 
 export const Signup = async (req, res) => {
   try {
@@ -25,13 +25,11 @@ export const Signup = async (req, res) => {
     await newUser.save();
     console.log('helloworld!');
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: 'user saved successfully',
-        userId: newUser._id,
-      });
+    res.status(201).json({
+      success: true,
+      message: 'user saved successfully',
+      userId: newUser._id,
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

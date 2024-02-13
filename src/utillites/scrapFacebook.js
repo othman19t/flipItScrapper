@@ -1,12 +1,14 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+puppeteer.use(StealthPlugin());
 async function scrapFacebook(facebookUrl) {
   const browser = await puppeteer.launch(); // { headless: false }
   const page = await browser.newPage();
 
-  await page.goto(facebookUrl);
+  await page.goto(facebookUrl); //facebookUrl https://bot.sannysoft.com/
   //************** */
-  // Current time plus 2 seconds
-  const endTime = Date.now() + 15000;
+  // Current time plus 20 seconds
+  const endTime = Date.now() + 20000;
 
   while (Date.now() < endTime) {
     // Scroll and wait 500ms
@@ -37,6 +39,7 @@ async function scrapFacebook(facebookUrl) {
     }))
   );
   await browser.close();
+
   return posts;
 }
 
