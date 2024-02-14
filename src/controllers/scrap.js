@@ -6,14 +6,14 @@ import Notification from '../models/Notification.model.js';
 import scrapSinglePage from '../utillites/scrapSinglePage.js';
 import searchTimeWords from '../utillites/searchTimeWords.js';
 
-export const scrap = async (req, res) => {
+const scrap = async (req, res) => {
   try {
-    const users = await User.find({ subscribed: true }).select('facebookUrl'); // getting all subscribed users
-
-    // if users are more then  0 then loop through and start the process
+    const users = await User.find({ subscribed: true }).select('facebookUrl');
     if (users.length > 0) {
-      users.map(async (user) => {
+      // Collect all user processing promises
+      const userPromises = users.map(async (user) => {
         let postsdata = [];
+        // ...rest of your user processing logic
         const data = await scrapFacebook(user.facebookUrl); // pass the url to scrap data
         data.map((ele) => {
           const newObj = {
@@ -28,7 +28,7 @@ export const scrap = async (req, res) => {
           };
           postsdata.push(newObj);
         });
-
+        // Inserting nonexisting posts and collecting notification promises
         // get existing posts to use it to get the noneisting posts
         const existingIds = (
           await Post.find({
@@ -39,58 +39,66 @@ export const scrap = async (req, res) => {
         const nonexistingPosts = postsdata.filter(
           (doc) => !existingIds.includes(doc.postId)
         );
-
-        // TODO: non existing posts should be scraped by single and get the data and then decide to save and send notification
         console.log('nonexistingPosts', nonexistingPosts.length);
-        //********* inserting nonexisting posts ********** */
-        try {
-          const notifications = [];
-          const result = await Post.insertMany(nonexistingPosts, {
-            ordered: false,
-          });
-          if (result.length > 0) {
-            result.map(async (ele) => {
+        const notifications = [];
+        if (nonexistingPosts.length > 0) {
+          try {
+            const result = await Post.insertMany(nonexistingPosts, {
+              ordered: false,
+            });
+            // Map through results and create promises for each notification
+            const notificationPromises = result.map(async (ele) => {
               const scrapPost = await scrapSinglePage(ele.postUrl);
               const oldPost = searchTimeWords(scrapPost.postedDate);
-              console.log('oldPost ', oldPost);
               if (!oldPost) {
-                console.log(' log from inside !oldPost');
                 const notification = {
                   postLocalId: ele._id,
                   userId: ele.userId,
                   type: 'newPost',
                   status: 'unread',
                 };
-                notifications.push(notification);
+                return notification;
               }
+              return null;
             });
-            /** insert notifications **/
-            if (notifications.length > 0) {
-              const insertNotifications = await Notification.insertMany(
-                notifications
-              );
-              console.log(
-                'insertNotifications length',
-                insertNotifications.length
-              );
-            }
+
+            // Wait for all notification promises to resolve and filter out nulls
+            const resolvedNotifications = (
+              await Promise.all(notificationPromises)
+            ).filter((n) => n);
+            // Add to the notifications array
+            notifications.push(...resolvedNotifications);
+          } catch (error) {
+            throw new Error(
+              'Error inserting nonexisting posts: ' + error.message
+            );
           }
-        } catch (error) {
-          console.error('Error:', error);
-          res.status(400).json({
-            success: false,
-            message: 'somthing went wrong check code line around 70',
-          });
         }
+        console.log('notifications.length', notifications.length);
+        return notifications; // Return the notifications for this user
       });
+
+      // Wait for all user promises to resolve and flatten the result into a single array
+      const allNotifications = (await Promise.all(userPromises)).flat();
+
+      // Insert notifications if any have been created
+      if (allNotifications.length > 0) {
+        console.log('allNotifications.length', allNotifications.length);
+        const insertNotifications = await Notification.insertMany(
+          allNotifications
+        );
+        console.log('insertNotifications length', insertNotifications.length);
+      }
     }
-    return res.status(200).json({
+
+    res.status(200).json({
       success: true,
-      message: 'scrap endpoint hit and everything went well',
+      message: 'Scrap endpoint hit and everything went well',
     });
   } catch (error) {
+    console.error('Error in scrap:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export default { scrap };
+export default scrap;
