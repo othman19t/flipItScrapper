@@ -5,10 +5,10 @@ async function scrapFacebook(facebookUrl) {
   const browser = await puppeteer.launch(); // { headless: false }
   const page = await browser.newPage();
 
-  await page.goto(facebookUrl); //facebookUrl https://bot.sannysoft.com/
+  await page.goto(facebookUrl); //facebookUrl https://bot.sannysoft.com/ //waitUntil: 'networkidle2', timeout: 60000
   //************** */
   // Current time plus 20 seconds
-  const endTime = Date.now() + 20000;
+  const endTime = Date.now() + 40000;
 
   while (Date.now() < endTime) {
     // Scroll and wait 500ms

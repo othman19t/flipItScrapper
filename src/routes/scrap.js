@@ -1,5 +1,5 @@
 import express from 'express';
-import { scrap } from '../controllers/scrap.js';
+import scrap from '../controllers/scrap.js';
 
 const router = express.Router();
 
