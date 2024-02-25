@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema({
   craiglistUrl: {
     type: String,
   },
+  radius: {
+    type: String,
+  },
+  postalCode: {
+    type: String,
+  },
   subscribed: {
     type: Boolean,
     default: false,
