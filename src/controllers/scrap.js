@@ -62,61 +62,61 @@ const scrap = async (req, res) => {
           (doc) => !existingIds.includes(doc.postId)
         );
         console.log('nonexistingPosts.lenght', nonexistingPosts.length);
-        // console.log('nonexistingPosts', nonexistingPosts);
+
         // check if non existing posts > 0 insert them and create notification and insert thme
         const notifications = [];
         if (nonexistingPosts.length > 0) {
-          // try {
-          const result = await Post.insertMany(nonexistingPosts, {
-            ordered: false,
-          });
-          // console.log('result 72', result);
-          // Map through results(inserted posts) and scrap url of each of these posts to get the time were posted
-          const notificationPromises = result.map(async (ele) => {
-            // const withInUserDistance = distance >= user.radius; // true if distance is within radius
-            if (
-              calculateDistance(ele?.location, user.postalCode, user.radius)
-            ) {
-              const ip = `${ips.results[i].proxy_address}:${ips.results[i].port}`;
-              if (i >= ips.count - 1) {
-                i = 0;
-              } else {
-                i++;
-              }
-              const scrapPost = await scrapSinglePage(ele.postUrl, ip);
-              const oldPost = searchTimeWords(scrapPost.postedDate);
-              if (!oldPost) {
-                console.log(
-                  chalk.bgGreen(
-                    'oldPost',
-                    oldPost,
-                    ' => ',
-                    scrapPost.postedDate
-                  )
-                );
-                const notification = {
-                  postLocalId: ele._id,
-                  userId: ele.userId,
-                  type: 'newPost',
-                  status: 'unread',
-                };
-                return notification;
-              }
-            }
-            return null;
-          });
+          try {
+            const result = await Post.insertMany(nonexistingPosts, {
+              ordered: false,
+            });
 
-          // Wait for all notification promises to resolve and filter out nulls
-          const resolvedNotifications = (
-            await Promise.all(notificationPromises)
-          ).filter((n) => n);
-          // Add to the notifications array
-          notifications.push(...resolvedNotifications);
-          // } catch (error) {
-          //   throw new Error(
-          //     'Error inserting nonexisting posts: ' + error.message
-          //   );
-          // }
+            // Map through results(inserted posts) and scrap url of each of these posts to get the time were posted
+            const notificationPromises = result.map(async (ele) => {
+              // const withInUserDistance = distance >= user.radius; // true if distance is within radius
+              if (
+                calculateDistance(ele?.location, user.postalCode, user.radius)
+              ) {
+                const ip = `${ips.results[i].proxy_address}:${ips.results[i].port}`;
+                if (i >= ips.count - 1) {
+                  i = 0;
+                } else {
+                  i++;
+                }
+                const scrapPost = await scrapSinglePage(ele.postUrl, ip);
+                const oldPost = searchTimeWords(scrapPost.postedDate);
+                if (!oldPost) {
+                  console.log(
+                    chalk.bgGreen(
+                      'oldPost',
+                      oldPost,
+                      ' => ',
+                      scrapPost.postedDate
+                    )
+                  );
+                  const notification = {
+                    postLocalId: ele._id,
+                    userId: ele.userId,
+                    type: 'newPost',
+                    status: 'unread',
+                  };
+                  return notification;
+                }
+              }
+              return null;
+            });
+
+            // Wait for all notification promises to resolve and filter out nulls
+            const resolvedNotifications = (
+              await Promise.all(notificationPromises)
+            ).filter((n) => n);
+            // Add to the notifications array
+            notifications.push(...resolvedNotifications);
+          } catch (error) {
+            throw new Error(
+              'Error inserting nonexisting posts: ' + error.message
+            );
+          }
         }
         console.log('notifications.length', notifications.length);
         return notifications; // Return the notifications for this user
