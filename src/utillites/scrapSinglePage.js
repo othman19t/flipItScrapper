@@ -29,7 +29,7 @@ async function scrapSinglePage(url, ip) {
     console.log(
       chalk.bgRed + ' check url because we could NOT find data ' + url
     );
-    await page.screenshot({ path: 'singlePageError63.png' });
+
     await browser.close();
     return { failed: true };
   }
