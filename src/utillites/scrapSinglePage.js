@@ -14,8 +14,6 @@ async function scrapSinglePage(url, ip) {
   // Navigate to the target URL
   await page.goto(url);
 
-  // waiting for sometime for targeted element to be loaded
-
   // Scrape the data you need.
   const data = await page.evaluate(() => {
     let postedDate = document.querySelector(
@@ -31,6 +29,9 @@ async function scrapSinglePage(url, ip) {
     console.log(
       chalk.bgRed + ' check url because we could NOT find data ' + url
     );
+    await page.screenshot({ path: 'singlePageError63.png' });
+    await browser.close();
+    return { failed: true };
   }
   // Close the browser
   await browser.close();

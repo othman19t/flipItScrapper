@@ -1,7 +1,10 @@
 import express from 'express';
-import scrap from '../controllers/scrap.js';
+import scrapFacebook from '../controllers/scrapFacebook.js';
+import scrapFacebookSinglePage from '../controllers/scrapFacebookSinglePage.js';
 
 const router = express.Router();
 
-router.get('/run', scrap);
+router.post('/run', scrapFacebook);
+router.post('/facebooksingle', scrapFacebookSinglePage);
+
 export default router;
