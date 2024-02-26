@@ -27,9 +27,7 @@ const scrap = async (req, res) => {
         const oldPost = searchTimeWords(scrapPost.postedDate);
         if (!oldPost) {
           console.log(
-            chalk.bgGreenBright(
-              ('oldPost', oldPost, ' => ', scrapPost.postedDate)
-            )
+            chalk.bgBlue('oldPost', oldPost, ' => ', scrapPost.postedDate)
           );
           res.status(200).json({
             success: true,
