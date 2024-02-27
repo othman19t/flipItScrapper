@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 dotenv.config();
-const eventBus = process.env.EVENT_BUS;
-const allowList = [`${eventBus}`];
+const eventBuzz = process.env.EVENT_BUZZ;
+const allowList = [`${eventBuzz}`];
 const corsOptions = {
   origin: function (origin, callback) {
     if (allowList.indexOf(origin) !== -1 || !origin) {
