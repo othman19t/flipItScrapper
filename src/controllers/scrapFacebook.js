@@ -49,7 +49,9 @@ const scrap = async (req, res) => {
             imgSrc: [ele.imgSrc],
             location: ele.location,
             postUrl: ele.postUrl,
-            postId: ele.postUrl.match(/\/item\/(.*?)\//)[1],
+            postId: `${ele.postUrl.match(/\/item\/(.*?)\//)[1]}for${
+              user.userId
+            }`,
             platform: 'facebook',
             userId: user.userId,
           };
