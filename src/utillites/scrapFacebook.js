@@ -29,7 +29,7 @@ async function scrapFacebook(facebookUrl, ip) {
     }
 
     // Current time plus 20 seconds
-    const scrollTime = 30000;
+    const scrollTime = 5000;
     const endTime = Date.now() + scrollTime;
     let passed65percent = false;
     let loginError = false;
