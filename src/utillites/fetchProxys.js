@@ -13,7 +13,12 @@ const fetchThroughProxys = async () => {
   });
 
   const res = await req.json();
-  return res;
+  let ips = [];
+  res.results.forEach((proxy) => {
+    const ip = `${proxy.proxy_address}:${proxy.port}`;
+    ips.push(ip);
+  });
+  return ips;
 };
 
 export default fetchThroughProxys;
