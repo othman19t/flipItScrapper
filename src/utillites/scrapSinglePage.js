@@ -13,7 +13,14 @@ async function scrapSinglePage(url, ip) {
   const page = await browser.newPage();
   // Navigate to the target URL
   await page.goto(url);
-
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
   // Scrape the data you need.
   const data = await page.evaluate(() => {
     let postedDate = document.querySelector(
@@ -29,7 +36,7 @@ async function scrapSinglePage(url, ip) {
     console.log(
       chalk.bgRed + ' check url because we could NOT find data ' + url
     );
-
+    await page.screenshot({ path: 'singlePageScrapErr.png', fullPage: true });
     await browser.close();
     return { failed: true };
   }
