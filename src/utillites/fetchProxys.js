@@ -14,8 +14,8 @@ const fetchThroughProxys = async () => {
 
   const res = await req.json();
   let ips = [];
-  res.results.forEach((proxy) => {
-    const ip = `${proxy.proxy_address}:${proxy.port}`;
+  res?.results?.forEach((proxy) => {
+    const ip = `${proxy?.proxy_address}:${proxy?.port}`;
     ips.push(ip);
   });
   return ips;

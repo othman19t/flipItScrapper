@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import chalk from 'chalk';
+
 puppeteer.use(StealthPlugin());
 async function scrapSinglePage(url, ip) {
   console.log('ip from scrapSinglePage: ', ip);
@@ -12,27 +13,64 @@ async function scrapSinglePage(url, ip) {
   // Open a new page
   const page = await browser.newPage();
   // Navigate to the target URL
-  await page.goto(url);
-
-  // Scrape the data you need.
-  const data = await page.evaluate(() => {
-    let postedDate = document.querySelector(
-      'div.xyamay9 div.x1xmf6yo div.x1yztbdb div span.x193iq5w'
-    )?.innerText;
-    // add more data points as needed div.x1xmf5yo div.x1yztbdb div
-    return {
-      postedDate,
-    };
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
   });
-  console.log(data);
-  if (!data.hasOwnProperty('postedDate')) {
-    console.log(
-      chalk.bgRed + ' check url because we could NOT find data ' + url
-    );
 
+  // const finalUrl = page.url();
+  // // Check if the final URL is different from the initial URL.
+  // if (url !== finalUrl) {
+  //   console.log(
+  //     chalk.red(`singlescrap The page has redirected error => ${url}`)
+  //   );
+  //   await browser.close();
+  //   return { failed: true };
+  // }
+
+  const expectedText1 = 'Not Logged In';
+  const expectedText2 = 'You must log in to continue.';
+  const notLoggedInError = await page.$x(
+    `//*[contains(text(), '${expectedText1}')]`
+  );
+  const mustLoginError = await page.$x(
+    `//*[contains(text(), '${expectedText2}')]`
+  );
+
+  if (notLoggedInError?.length > 0 || mustLoginError?.length > 0) {
+    const elementText = await page.evaluate(
+      (el) => el?.innerText,
+      notLoggedInError[0]
+    );
+    console.log(chalk.red('single scrap Not Logged In error:', elementText));
     await browser.close();
     return { failed: true };
   }
+  // Scrape the data you need.
+  const lookForDate = await page.evaluate(
+    () =>
+      document.querySelector(
+        'div.xyamay9 div.x1xmf6yo div.x1yztbdb div span.x193iq5w'
+      )?.innerText
+  );
+  const lookForDescription = await page.evaluate(() => {
+    const elements = document.querySelectorAll(
+      ' div.xb57i2i div.x78zum5 div div.x1n2onr6 div.x9f619 div.x9f619 div.xz9dl7a div span.x193iq5w'
+    );
+    return Array.from(elements, (element) => element.innerText);
+  });
+  await page.screenshot({ path: 'screenshot1.png', fullPage: true });
+  const data = {
+    date: lookForDate,
+    description: lookForDescription[lookForDescription?.length - 1],
+  };
+  console.log('lookForDescription', lookForDescription);
+  console.log('data: ', data);
   // Close the browser
   await browser.close();
   return data;
