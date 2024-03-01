@@ -10,6 +10,14 @@ async function scrapFacebook(facebookUrl, ip) {
   try {
     const page = await browser.newPage();
     await page.goto(facebookUrl); //{ waitUntil: 'load' } waitUntil: 'networkidle2', timeout: 60000
+
+    const finalUrl = page.url();
+    // Check if the final URL is different from the initial URL.
+    if (facebookUrl !== finalUrl) {
+      console.log(chalk.red(`main scrap The page has redirected`));
+      await browser.close();
+      return { failed: true };
+    }
     await page.setRequestInterception(true);
     page.on('request', (req) => {
       if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
@@ -18,15 +26,6 @@ async function scrapFacebook(facebookUrl, ip) {
         req.continue();
       }
     });
-
-    const finalUrl = page.url();
-    // Check if the final URL is different from the initial URL.
-    if (facebookUrl !== finalUrl) {
-      console.log(chalk.red(`The page has redirected`));
-      await browser.close();
-      return { failed: true };
-    }
-
     const selector = 'div.x92rtbv';
     const loginModal = await page.$(selector);
     // If the element handle is not null, then the element exists.
