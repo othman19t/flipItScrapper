@@ -64,7 +64,7 @@ async function scrapSinglePage(url, ip) {
     );
     return Array.from(elements, (element) => element.innerText);
   });
-  await page.screenshot({ path: 'screenshot1.png', fullPage: true });
+
   const data = {
     date: lookForDate,
     description: lookForDescription[lookForDescription?.length - 1],
