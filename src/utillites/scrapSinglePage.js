@@ -1,14 +1,25 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import ProxyPlugin from 'puppeteer-extra-plugin-proxy';
 import chalk from 'chalk';
 
 puppeteer.use(StealthPlugin());
 async function scrapSinglePage(url, ip) {
   console.log('ip from scrapSinglePage: ', ip);
+  puppeteer.use(
+    ProxyPlugin({
+      address: ip.ip,
+      port: ip.port,
+      credentials: {
+        username: ip.username,
+        password: ip.password,
+      },
+    })
+  );
   // Launch the browser
   const browser = await puppeteer.launch({
-    args: [`--proxy-server=${ip}`],
-    // headless: false,
+    headless: true, // Consider running headless: true for production
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   // Open a new page
   const page = await browser.newPage();

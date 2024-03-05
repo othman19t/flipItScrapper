@@ -1,11 +1,22 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import ProxyPlugin from 'puppeteer-extra-plugin-proxy';
 import chalk from 'chalk';
 puppeteer.use(StealthPlugin());
 async function scrapFacebook(facebookUrl, ip) {
+  puppeteer.use(
+    ProxyPlugin({
+      address: ip.ip,
+      port: ip.port,
+      credentials: {
+        username: ip.username,
+        password: ip.password,
+      },
+    })
+  );
   const browser = await puppeteer.launch({
-    // headless: false,
-    args: [`--proxy-server=${ip}`],
+    headless: true, // Consider running headless: true for production
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   }); // { headless: false }
   try {
     const page = await browser.newPage();

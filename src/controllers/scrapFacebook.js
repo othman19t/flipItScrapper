@@ -2,13 +2,15 @@ import scrapFacebook from '../utillites/scrapFacebook.js';
 import getIps from '../utillites/fetchProxys.js';
 import chalk from 'chalk'; //dont delete this will need it later
 import proxyChain from 'proxy-chain';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const scrap = async (req, res) => {
-  const proxyServer = `${process.env.BACK_UP_PROXY}`;
-  const proxyUrl = `http://${proxyServer}`;
-  const backupIp = await proxyChain.anonymizeProxy({
-    url: proxyUrl,
-  });
+  const backupIp = {
+    ip: process.env.BACK_UP_IP,
+    port: process.env.BACK_UP_port,
+    username: process.env.BACK_UP_USERNAME,
+    password: process.env.BACK_UP_PASSWORD,
+  };
 
   // console.log('body:', req.body);
   const user = req?.body; //array of users data to use for scrapping
