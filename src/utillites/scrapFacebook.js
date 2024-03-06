@@ -54,7 +54,7 @@ async function scrapFacebook(facebookUrl, ip) {
     }
 
     // Current time plus 20 seconds
-    const scrollTime = 15000;
+    const scrollTime = 25000;
     const endTime = Date.now() + scrollTime;
     let passed65percent = false;
     let loginError = false;
@@ -77,9 +77,9 @@ async function scrapFacebook(facebookUrl, ip) {
         break;
       }
       // check if scrolling passed 65% and keep track on that
-      if (Date.now() - (endTime - scrollTime * 0.35) > 0) {
+      if (Date.now() - (endTime - scrollTime * 0.25) > 0) {
         passed65percent = true;
-        console.log(chalk.blueBright('passed 65%'));
+        console.log(chalk.blueBright('passed 75%'));
       }
 
       // Scroll and wait 500ms
