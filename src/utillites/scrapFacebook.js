@@ -16,6 +16,7 @@ async function scrapFacebook(facebookUrl, ip) {
   );
 
   const browser = await puppeteer.launch({
+    timeout: 0,
     headless: 'new',
     args: [
       '--disable-gpu', // Disable GPU hardware acceleration

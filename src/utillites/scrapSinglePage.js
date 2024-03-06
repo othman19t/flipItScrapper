@@ -18,6 +18,7 @@ async function scrapSinglePage(url, ip) {
   );
   // Launch the browser
   const browser = await puppeteer.launch({
+    timeout: 0,
     headless: 'new',
     args: [
       '--disable-gpu', // Disable GPU hardware acceleration
