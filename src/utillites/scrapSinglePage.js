@@ -18,8 +18,12 @@ async function scrapSinglePage(url, ip) {
   );
   // Launch the browser
   const browser = await puppeteer.launch({
-    headless: true, // Consider running headless: true for production
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: [
+      '--disable-gpu', // Disable GPU hardware acceleration
+      '--no-sandbox', // Disable the sandbox to run on Heroku
+      '--remote-debugging-port=9222', // Specify the remote debugging port
+      '--disable-setuid-sandbox',
+    ],
   });
   // Open a new page
   const page = await browser.newPage();

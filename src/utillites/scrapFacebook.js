@@ -14,10 +14,15 @@ async function scrapFacebook(facebookUrl, ip) {
       },
     })
   );
+
   const browser = await puppeteer.launch({
-    headless: true, // Consider running headless: true for production
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  }); // { headless: false }
+    args: [
+      '--disable-gpu', // Disable GPU hardware acceleration
+      '--no-sandbox', // Disable the sandbox to run on Heroku
+      '--remote-debugging-port=9222', // Specify the remote debugging port
+      '--disable-setuid-sandbox',
+    ],
+  });
   try {
     const page = await browser.newPage();
     await page.goto(facebookUrl); //{ waitUntil: 'load' } waitUntil: 'networkidle2', timeout: 60000
