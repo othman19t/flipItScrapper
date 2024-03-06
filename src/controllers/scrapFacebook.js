@@ -7,22 +7,20 @@ dotenv.config();
 const scrap = async (req, res) => {
   const backupIp = {
     ip: process.env.BACK_UP_IP,
-    port: process.env.BACK_UP_port,
+    port: process.env.BACK_UP_PORT,
     username: process.env.BACK_UP_USERNAME,
     password: process.env.BACK_UP_PASSWORD,
   };
 
   // console.log('body:', req.body);
   const user = req?.body; //array of users data to use for scrapping
-  const mainIps = await getIps(); // retrieves IP addresses to use for scraping purposes
+  const mainProxy = await getIps(); // retrieves IP addresses to use for scraping purposes
   // let i = 0; // used to loop through and keep track of length of posts needs single page scraping
+  let mainIps = mainProxy;
   let failed = true; // keep track if scraping attempt failed
   let usedPackupProxy = false; // to keep track of whether used packup proxy or not
   let blockedIps = [];
   try {
-    console.log('====================================');
-    console.log('mainIps', mainIps);
-    console.log('====================================');
     let initialPosts = [];
     // keep trying to scrap until it is successful then assign failed to false then exit while loop | when it fails because of IP then increase vaule of i++ to grap the next ip address in the next round | when i is = to length of ips rest it to 0 to try again | in the end assign data to initial posts when all sccessed
     while (failed) {

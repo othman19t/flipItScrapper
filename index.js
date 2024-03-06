@@ -19,6 +19,7 @@ const corsOptions = {
   optionsSuccessStatus: 200, // For legacy browser support
   credentials: true, // This allows session cookies from browser to pass through
 };
+process.setMaxListeners(15);
 const app = express();
 app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '6mb' }));
