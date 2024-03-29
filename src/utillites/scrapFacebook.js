@@ -30,7 +30,7 @@ async function scrapFacebook(facebookUrl, ip) {
     // Set the viewport to 1920x1080
     await page.setViewport({
       width: 1920,
-      height: 3280,
+      height: 1280,
     });
     await page.goto(facebookUrl); //{ waitUntil: 'load' } waitUntil: 'networkidle2', timeout: 60000
 
@@ -59,7 +59,7 @@ async function scrapFacebook(facebookUrl, ip) {
     }
 
     // Current time plus 20 seconds
-    const scrollTime = 18000;
+    const scrollTime = 10000;
     const endTime = Date.now() + scrollTime;
     let passed65percent = false;
     let loginError = false;
