@@ -30,7 +30,7 @@ async function scrapFacebook(facebookUrl, ip) {
     // Set the viewport to 1920x1080
     await page.setViewport({
       width: 1920,
-      height: 1280,
+      height: 3280,
     });
     await page.goto(facebookUrl); //{ waitUntil: 'load' } waitUntil: 'networkidle2', timeout: 60000
 
