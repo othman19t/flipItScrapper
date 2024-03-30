@@ -60,9 +60,9 @@ const scrap = async (req, res) => {
       }
     }
     if (usedPackupProxy) {
-      console.log(chalk.blue('closing backup proxy connection'));
-      const { hostname, port } = new URL(backupIp);
-      await proxyChain.closeTunnel(`${hostname}:${port}`);
+      // console.log(chalk.blue('closing backup proxy connection'));
+      // const { hostname, port } = new URL(backupIp);
+      // await proxyChain.closeTunnel(`${hostname}:${port}`);
     }
     res.status(200).json({
       success: true,
