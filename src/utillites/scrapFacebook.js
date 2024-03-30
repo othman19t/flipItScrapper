@@ -29,8 +29,8 @@ async function scrapFacebook(facebookUrl, ip) {
     const page = await browser.newPage();
     // Set the viewport to 1920x1080
     await page.setViewport({
-      width: 1920,
-      height: 1280,
+      width: 2400,
+      height: 1400,
     });
     await page.goto(facebookUrl); //{ waitUntil: 'load' } waitUntil: 'networkidle2', timeout: 60000
 
@@ -91,21 +91,19 @@ async function scrapFacebook(facebookUrl, ip) {
       await page.evaluate(() => {
         window.scrollBy(0, window.innerHeight);
       });
-      await page.waitForTimeout(500);
     }
 
     // check if passed 65% scrolling time has passed
     if (!passed65percent && loginError) {
       console.log(
         chalk.red(
-          'not passed because of scrolling less then 65%. will retry again'
+          'not passed because of scrolling less then 75%. will retry again'
         )
       );
       await browser.close();
       return { failed: true };
     }
     //Now that we scrolled for 15 seconds, let's wait a bit for any final async loads
-    await page.waitForTimeout(1000);
 
     const posts = await page.evaluate(() =>
       Array.from(document.querySelectorAll('div.x3ct3a4'), (ele) => ({
@@ -124,6 +122,7 @@ async function scrapFacebook(facebookUrl, ip) {
         postUrl: ele.querySelector('a.x1i10hfl').href,
       }))
     );
+
     await browser.close();
     console.log('posts.length = ', posts.length);
     return posts;
